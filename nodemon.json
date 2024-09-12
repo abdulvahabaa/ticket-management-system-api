@@ -1,0 +1,7 @@
+{
+  "delay": "500ms",
+  "verbose": true,
+  "ext": "js,cjs,mjs,json,njk,ts",
+  "watch": ["src", "nodemon.json", "server.ts"],
+  "ignore": ["dist"]
+}
