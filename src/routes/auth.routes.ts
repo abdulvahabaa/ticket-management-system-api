@@ -1,9 +1,9 @@
-import express, { Request } from "express";
+import express from "express";
+import AuthController from "../controllers/authController";
 
-const authRoutes = express.Router({ mergeParams: true });
+const authRoutes = express.Router();
+const authController = new AuthController();
 
-authRoutes.get("/", (req: Request) => {
-    return req.body
-})
+authRoutes.post("/login", authController.login);
 
 export default authRoutes;

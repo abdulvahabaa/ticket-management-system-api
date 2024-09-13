@@ -1,9 +1,9 @@
-import express, { Request } from "express";
+import express from "express";
+import UsersController from "../controllers/users.controller";
 
-const usersRoutes = express.Router({ mergeParams: true });
+const usersRoutes = express.Router();
+const usersController = new UsersController();
 
-usersRoutes.get("/", (req: Request) => {
-    return req.body
-})
+usersRoutes.post("/", usersController.createUser);
 
 export default usersRoutes;
