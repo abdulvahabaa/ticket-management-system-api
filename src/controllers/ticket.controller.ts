@@ -101,7 +101,6 @@ class TicketController {
   };
 
   public assignUserToTicket = async (req: CustomRequest, res: Response) => {
-
     try {
       const { ticketId } = req.params;
       const { userId } = req.body;
@@ -125,12 +124,16 @@ class TicketController {
       }
 
       const user = await this.usersService.getUserById(userId);
-  
+
       if (!user) {
         return res.status(404).json({ message: "User does not exist" });
       }
 
-      if (ticket.assigned_users.map((user: any) => user.userId == userId)) {
+      if (
+        ticket.assigned_users.some(
+          (assignedUser: any) => assignedUser.userId == userId
+        )
+      ) {
         return res.status(400).json({ message: "User already assigned" });
       }
 
