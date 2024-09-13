@@ -6,6 +6,7 @@ import bodyParser from "body-parser";
 import usersRoutes from "./routes/users.routes";
 import authRoutes from "./routes/auth.routes"; 
 import ticketRoutes from "./routes/ticket.routes";
+import dashboardRoutes from "./routes/dashboard.routes";
 
 dotenv.config();
 
@@ -29,6 +30,7 @@ app.use(cors(corsOptions));
 app.use("/users", usersRoutes);
 app.use("/auth", authRoutes);
 app.use("/ticket", ticketRoutes);
+app.use("/dashboard", dashboardRoutes);
 
 
 

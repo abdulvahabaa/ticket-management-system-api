@@ -4,7 +4,7 @@ import AuthService from "../services/auth.service";
 class AuthController {
   private authService = new AuthService();
 
-  public login = async (req: Request, res: Response, next: NextFunction) => {
+  public login = async (req: Request, res: Response, ) => {
     try {
       const { email, password } = req.body;
       if (!email || !password) {
@@ -22,7 +22,7 @@ class AuthController {
       res
         .status(500)
         .json({ message: error.message || "Something went wrong" });
-      // next(error);
+    
     }
   };
 }

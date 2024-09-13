@@ -1,9 +1,9 @@
-import express, { Request } from "express";
+import express from "express";
+import DashboardController from "../controllers/dashboard.controller";
 
-const dashboardRoutes = express.Router({ mergeParams: true });
+const dashboardRoutes = express.Router();
+const dashboardController = new DashboardController();
 
-dashboardRoutes.get("/", (req: Request) => {
-    return req.body
-})
+dashboardRoutes.get("/analytics", dashboardController.ticketAnalytics);
 
 export default dashboardRoutes;
