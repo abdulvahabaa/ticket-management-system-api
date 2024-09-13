@@ -150,6 +150,15 @@ class TicketController {
       return res.status(200).json({ message: "User assigned successfully" });
     } catch (error) {}
   };
+
+  public ticketAnalytics = async (req: Request, res: Response) => {
+    try {
+      const result = await this.ticketService.ticketAnalytics();
+      return res.status(200).json(result);
+    } catch (error) {
+      console.log(error);
+    }
+  };
 }
 
 export default TicketController;

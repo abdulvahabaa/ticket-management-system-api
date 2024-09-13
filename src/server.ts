@@ -31,6 +31,7 @@ app.use("/auth", authRoutes);
 app.use("/ticket", ticketRoutes);
 
 
+
 app.get("/", (req,res) => {
     res.send("Hello world")
 })
