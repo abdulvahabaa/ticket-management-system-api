@@ -1,9 +1,14 @@
 import pool from "../db/connection";
 import bcrypt from "bcrypt";
-import jwt from "jsonwebtoken";
+import jwt, { Jwt } from "jsonwebtoken";
 
+interface User {
+  id: number;
+  email: string;
+  password: string;
+}
 class AuthService {
-  public async login(email: string, password: string): Promise<any> {
+  public async login(email: string, password: string): Promise<User> {
     try {
       const result = await pool.query(
         "SELECT * FROM public.users WHERE email = $1",
@@ -21,8 +26,8 @@ class AuthService {
       }
 
       return user;
-    } catch (error) {
-      throw new Error((error as Error).message);
+    } catch (error:unknown) {
+      throw new Error(error instanceof Error ? error.message : "Login error");
     }
   }
 

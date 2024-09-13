@@ -40,9 +40,10 @@ class UsersService {
   public async getUserById(id: number): Promise<any> {
     try {
       const result = await pool.query(
-        "SELECT * FROM public.users WHERE id = $1",
+        "SELECT id, name, email FROM public.users WHERE id = $1",
         [id]
       );
+      
       return result.rows[0];
     } catch (error) {
       console.error(error);

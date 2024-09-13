@@ -1,8 +1,11 @@
 import jwt from "jsonwebtoken";
 import { Request, Response, NextFunction } from "express";
 
+interface CustomRequest extends Request {
+  user?: any; 
+}
 export const verifyToken = async (
-  req: Request,
+  req: CustomRequest,
   res: Response,
   next: NextFunction
 ) => {
@@ -27,6 +30,7 @@ export const verifyToken = async (
         );
 
         console.log("Token Verified:", verified);
+        req.user= verified
         next();
       } catch (err: any) {
         console.error("Token verification error:", err); 

@@ -2,6 +2,10 @@ import { Request, Response } from "express";
 import TicketService from "../services/ticket.service";
 import UsersService from "../services/users.service";
 
+interface CustomRequest extends Request {
+  user?: any;
+}
+
 class TicketController {
   public ticketService = new TicketService();
   public usersService = new UsersService();
@@ -96,25 +100,37 @@ class TicketController {
     } catch (error) {}
   };
 
-  public assignUserToTicket = async (req: Request, res: Response) => {
-    console.log(req.body);
+  public assignUserToTicket = async (req: CustomRequest, res: Response) => {
+
     try {
       const { ticketId } = req.params;
       const { userId } = req.body;
+      const creatorId = req.user.id;
+
+      const authorization = req.headers.authorization;
+      if (!authorization) {
+        return res
+          .status(401)
+          .json({ message: "No authorization token provided" });
+      }
 
       const ticket = await this.ticketService.getTicketById(ticketId!);
-      console.log(ticket, "ticket data");
+
       if (!ticket) {
         return res.status(404).json({ message: "Ticket not found" });
       }
 
+      if (!Array.isArray(ticket.assigned_users)) {
+        ticket.assigned_users = [];
+      }
+
       const user = await this.usersService.getUserById(userId);
-      console.log(user, "user data");
+  
       if (!user) {
         return res.status(404).json({ message: "User does not exist" });
       }
 
-      if (ticket.assigned_users && ticket.assigned_users.includes(userId)) {
+      if (ticket.assigned_users.map((user: any) => user.userId == userId)) {
         return res.status(400).json({ message: "User already assigned" });
       }
 
@@ -130,11 +146,11 @@ class TicketController {
           .json({ message: "User assignment limit reached" });
       }
 
-      // if (ticket.created_by !== userId || user.type !== "admin") {
-      //   return res
-      //     .status(400)
-      //     .json({ message: "User not authorized to assign ticket" });
-      // }
+      if (ticket.created_by !== creatorId && user.type !== "admin") {
+        return res
+          .status(400)
+          .json({ message: "User not authorized to assign ticket" });
+      }
 
       const assignObject = {
         userId: user.id,
@@ -142,13 +158,15 @@ class TicketController {
         email: user.email,
       };
 
-      ticket.assigned_users
-        ? ticket.assigned_users.push(assignObject)
-        : (ticket.assigned_users = [assignObject]);
+      ticket.assigned_users.push(assignObject);
 
-      // await this.ticketService.updateTicket(ticketId!, ticket);
+      await this.ticketService.updateTicket(ticketId!, ticket);
+
       return res.status(200).json({ message: "User assigned successfully" });
-    } catch (error) {}
+    } catch (error) {
+      console.log(error);
+      return res.status(500).json({ message: "Something went wrong" });
+    }
   };
 
   public ticketHistory = async (req: Request, res: Response) => {
