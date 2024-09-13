@@ -2,7 +2,6 @@ import pool from "../db/connection";
 
 class DashboardService {
   public async ticketAnalytics(): Promise<any> {
-    
     try {
       const result = await pool.query(`
         WITH ticket_counts AS (
@@ -62,11 +61,14 @@ class DashboardService {
           averageTicketsBookedPerDay: result.rows[0].avg_tickets_per_day,
           priorityDistribution: {
             low: result.rows[0].low_priority,
-            averageLowTicketsBookedPerDay: result.rows[0].avg_low_priority_per_day,
+            averageLowTicketsBookedPerDay:
+              result.rows[0].avg_low_priority_per_day,
             medium: result.rows[0].medium_priority,
-            averageMediumTicketsBookedPerDay: result.rows[0].avg_medium_priority_per_day,
+            averageMediumTicketsBookedPerDay:
+              result.rows[0].avg_medium_priority_per_day,
             high: result.rows[0].high_priority,
-            averageHighTicketsBookedPerDay: result.rows[0].avg_high_priority_per_day
+            averageHighTicketsBookedPerDay:
+              result.rows[0].avg_high_priority_per_day,
           },
           typeDistribution: {
             concert: result.rows[0].concert_type,
@@ -83,7 +85,9 @@ class DashboardService {
       }
     } catch (error: any) {
       console.error("Error occurred in ticket analytics:", error.message);
-      throw new Error(`Failed to retrieve ticket analytics: ${(error as Error).message}`);
+      throw new Error(
+        `Failed to retrieve ticket analytics: ${(error as Error).message}`
+      );
     }
   }
 }

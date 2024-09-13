@@ -152,8 +152,6 @@ class TicketService {
       );
     }
   }
-
-  
 }
 
 export default TicketService;

@@ -14,6 +14,4 @@ ticketRoutes.get("/:ticketId", ticketController.getTicketById);
 
 ticketRoutes.post("/:ticketId/assign", ticketController.assignUserToTicket);
 
-
-
 export default ticketRoutes;

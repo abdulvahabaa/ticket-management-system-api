@@ -2,11 +2,11 @@ import express from "express"
 import dotenv from "dotenv";
 import cors from "cors";
 import helmet from "helmet"
-import bodyParser from "body-parser";
 import usersRoutes from "./routes/users.routes";
 import authRoutes from "./routes/auth.routes"; 
 import ticketRoutes from "./routes/ticket.routes";
 import dashboardRoutes from "./routes/dashboard.routes";
+
 
 dotenv.config();
 
@@ -24,21 +24,16 @@ app.use(helmet());
 app.use(helmet.crossOriginResourcePolicy({ policy: "cross-origin" }));
 app.use(cors(corsOptions));
 
-// app.use(bodyParser.json({ limit: "30mb" }));
-// app.use(bodyParser.urlencoded({ limit: "30mb", extended: true }));
-
 app.use("/users", usersRoutes);
 app.use("/auth", authRoutes);
 app.use("/ticket", ticketRoutes);
 app.use("/dashboard", dashboardRoutes);
 
+app.use((req, res, next) => {
+  res.status(404).json({ message: "Route not found" });
+});
 
-
-app.get("/", (req,res) => {
-    res.send("Hello world")
-})
-
-const PORT = process.env.PORT || 3000
+const PORT = process.env.PORT || 5000;
 
 app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`)

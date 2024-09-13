@@ -1,8 +1,11 @@
 import jwt from "jsonwebtoken";
-import { Request ,Response,NextFunction } from "express";
+import { Request, Response, NextFunction } from "express";
 
-export const verifyToken = async (req:Request, res:Response, next:NextFunction) => {
- 
+export const verifyToken = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   try {
     const token = req.headers.authorization;
 
@@ -12,12 +15,15 @@ export const verifyToken = async (req:Request, res:Response, next:NextFunction) 
 
     if (token.startsWith("Bearer ")) {
       const extractedToken = token.slice(7).trimLeft();
-      
+
       try {
-        const verified = jwt.verify(extractedToken, process.env.JWT_SECRET as string);
+        const verified = jwt.verify(
+          extractedToken,
+          process.env.JWT_SECRET as string
+        );
 
         //   req.user = verified;
-          
+
         next();
       } catch (err) {
         // if (err.name === 'TokenExpiredError') {
