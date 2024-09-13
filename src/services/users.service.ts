@@ -36,6 +36,19 @@ class UsersService {
       return { error: "An error occurred while creating the user" };
     }
   }
+
+  public async getUserById(id: number): Promise<any> {
+    try {
+      const result = await pool.query(
+        "SELECT * FROM public.users WHERE id = $1",
+        [id]
+      );
+      return result.rows[0];
+    } catch (error) {
+      console.error(error);
+      return null;
+    }
+  }
 }
 
 export default UsersService;

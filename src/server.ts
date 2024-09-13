@@ -5,6 +5,7 @@ import helmet from "helmet"
 import bodyParser from "body-parser";
 import usersRoutes from "./routes/users.routes";
 import authRoutes from "./routes/auth.routes"; 
+import ticketRoutes from "./routes/ticket.routes";
 
 dotenv.config();
 
@@ -27,6 +28,7 @@ app.use(cors(corsOptions));
 
 app.use("/users", usersRoutes);
 app.use("/auth", authRoutes);
+app.use("/ticket", ticketRoutes);
 
 
 app.get("/", (req,res) => {

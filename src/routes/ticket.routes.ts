@@ -1,9 +1,11 @@
-import express, { Request } from "express";
+import express from "express";
+import TicketController from "../controllers/ticket.controller";
+import { verifyToken } from "../middleware/authentication.middleware";
 
-const ticketRoutes = express.Router({ mergeParams: true });
+const ticketRoutes = express.Router();
+const ticketController = new TicketController();
 
-ticketRoutes.get("/", (req: Request) => {
-    return req.body
-})
+// ticketRoutes.post("/", verifyToken, ticketController.createTicket);
+ticketRoutes.post("/", ticketController.createTicket);
 
 export default ticketRoutes;
