@@ -97,7 +97,11 @@ class TicketController {
         assignedUsers: ticket.assigned_users || [],
       };
       return res.status(200).json(response);
-    } catch (error) {}
+    } catch (error) {
+      res
+        .status(500)
+        .json({ message: error.message || "Something went wrong" });
+    }
   };
 
   public assignUserToTicket = async (req: CustomRequest, res: Response) => {
@@ -178,6 +182,7 @@ class TicketController {
       return res.status(200).json(result);
     } catch (error) {
       console.log(error);
+      return res.status(500).json({ message: "Something went wrong" });
     }
   };
 }
