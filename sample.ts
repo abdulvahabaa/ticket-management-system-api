@@ -36,3 +36,25 @@ const data = {
     },
   ],
 };
+
+const Data2 = {
+  totalTickets: 50,
+  closedTickets: 30,
+  openTickets: 15,
+  averageCustomerSpending: 500, // The average of money that a single customer has spent in the given timespan
+  AverageTicketsBookedPerDay: 100,
+  inProgressTickets: 5,
+  priorityDistribution: {
+    low: 10,
+    averageLowTicketsBookedPerDay: 1.2,
+    medium: 20,
+    averageMediumTicketsBookedPerDay: 2,
+    high: 20,
+    AverageHighTicketsBookedPerDay: 2,
+  },
+  typeDistribution: {
+    concert: 20,
+    conference: 15,
+    sports: 15,
+  },
+};

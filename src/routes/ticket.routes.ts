@@ -8,11 +8,12 @@ const ticketController = new TicketController();
 // ticketRoutes.post("/", verifyToken, ticketController.createTicket);
 ticketRoutes.post("/", ticketController.createTicket);
 
-ticketRoutes.get("/analytics", ticketController.ticketAnalytics);
+ticketRoutes.get("/analytics", ticketController.ticketHistory);
 
 ticketRoutes.get("/:ticketId", ticketController.getTicketById);
 
 ticketRoutes.post("/:ticketId/assign", ticketController.assignUserToTicket);
+
 
 
 export default ticketRoutes;

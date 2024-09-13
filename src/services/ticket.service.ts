@@ -71,7 +71,7 @@ class TicketService {
     }
   }
 
-  public async ticketAnalytics(): Promise<any> {
+  public async ticketHistory(): Promise<any> {
     console.log("Fetching analytics data...");
     try {
       const result = await pool.query(`
@@ -152,6 +152,8 @@ class TicketService {
       );
     }
   }
+
+  
 }
 
 export default TicketService;
