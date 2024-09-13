@@ -5,13 +5,16 @@ import { verifyToken } from "../middleware/authentication.middleware";
 const ticketRoutes = express.Router();
 const ticketController = new TicketController();
 
-// ticketRoutes.post("/", verifyToken, ticketController.createTicket);
-ticketRoutes.post("/", ticketController.createTicket);
+ticketRoutes.post("/", verifyToken, ticketController.createTicket);
 
-ticketRoutes.get("/analytics", ticketController.ticketHistory);
+ticketRoutes.get("/analytics", verifyToken, ticketController.ticketHistory);
 
-ticketRoutes.get("/:ticketId", ticketController.getTicketById);
+ticketRoutes.get("/:ticketId", verifyToken, ticketController.getTicketById);
 
-ticketRoutes.post("/:ticketId/assign", ticketController.assignUserToTicket);
+ticketRoutes.post(
+  "/:ticketId/assign",
+  verifyToken,
+  ticketController.assignUserToTicket
+);
 
 export default ticketRoutes;

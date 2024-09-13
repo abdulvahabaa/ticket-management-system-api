@@ -6,35 +6,42 @@ export const verifyToken = async (
   res: Response,
   next: NextFunction
 ) => {
+
   try {
     const token = req.headers.authorization;
+    // console.log("Authorization Header:", token); 
 
     if (!token) {
-      return res.status(403).send("Access Token Denied");
+      return res.status(403).json({ message: "Access Token Denied" });
     }
 
+    // Check for "Bearer " in the token
     if (token.startsWith("Bearer ")) {
-      const extractedToken = token.slice(7).trimLeft();
+      const extractedToken = token.split(" ")[1];
+   
 
       try {
         const verified = jwt.verify(
-          extractedToken,
+          extractedToken as string,
           process.env.JWT_SECRET as string
         );
 
-        //   req.user = verified;
-
+        console.log("Token Verified:", verified);
         next();
-      } catch (err) {
-        // if (err.name === 'TokenExpiredError') {
-        //   return res.status(401).json({ error: 'Access Token Expired' });
-        // }
-        // throw err;
+      } catch (err: any) {
+        console.error("Token verification error:", err); 
+
+        if (err.name === "TokenExpiredError") {
+          return res.status(401).json({ error: "Access Token Expired" });
+        }
+        return res.status(403).json({ message: "Invalid Token" });
       }
     } else {
-      return res.status(403).send("Access Token Denied");
+      return res.status(403).json({ message: "Access Token Denied" });
     }
-  } catch (err) {
-    // res.status(500).json({ error: err.message });
+  } catch (err: any) {
+    console.error("Error in verifyToken middleware:", err);
+
+    res.status(500).json({ error: err.message });
   }
 };

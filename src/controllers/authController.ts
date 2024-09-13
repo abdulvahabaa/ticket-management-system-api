@@ -17,7 +17,7 @@ class AuthController {
 
       const token = await this.authService.generateToken(user);
 
-      return res.status(200).json({ message: "Login successful", token });
+      return res.status(200).json({token: token});
     } catch (error: any) {
       res
         .status(500)
