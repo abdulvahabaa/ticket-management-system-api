@@ -77,9 +77,9 @@ class TicketController {
   public getTicketById = async (req: Request, res: Response) => {
     try {
       const { ticketId } = req.params;
-      console.log(ticketId);
+      
       const ticket = await this.ticketService.getTicketById(ticketId!);
-      console.log(ticket);
+      
       if (!ticket) {
         return res.status(404).json({ message: "Ticket not found" });
       }
@@ -97,7 +97,7 @@ class TicketController {
         assignedUsers: ticket.assigned_users || [],
       };
       return res.status(200).json(response);
-    } catch (error:any) {
+    } catch (error: any) {
       res
         .status(500)
         .json({ message: error.message || "Something went wrong" });
@@ -108,7 +108,7 @@ class TicketController {
     try {
       const { ticketId } = req.params;
       const { userId } = req.body;
-      const creatorId = req.user.id;
+      const loginId = req.user.id;
 
       const authorization = req.headers.authorization;
       if (!authorization) {
@@ -127,9 +127,10 @@ class TicketController {
         ticket.assigned_users = [];
       }
 
-      const user = await this.usersService.getUserById(userId);
+      const assignToUser = await this.usersService.getUserById(userId);
+      const LoggedInUser = await this.usersService.getUserById(loginId);
 
-      if (!user) {
+      if (!assignToUser) {
         return res.status(404).json({ message: "User does not exist" });
       }
 
@@ -152,17 +153,22 @@ class TicketController {
           .status(400)
           .json({ message: "User assignment limit reached" });
       }
+      // console.log(LoggedInUser, "LoggedInUser");
+      // console.log(assignToUser, "assignToUser");
 
-      if (ticket.created_by !== creatorId && user.type !== "admin") {
+      if (
+        ticket.created_by !== LoggedInUser.id ||
+        (LoggedInUser.type === "customer" && assignToUser.type === "admin")
+      ) {
         return res
           .status(400)
           .json({ message: "User not authorized to assign ticket" });
       }
 
       const assignObject = {
-        userId: user.id,
-        name: user.name,
-        email: user.email,
+        userId: assignToUser.id,
+        name: assignToUser.name,
+        email: assignToUser.email,
       };
 
       ticket.assigned_users.push(assignObject);

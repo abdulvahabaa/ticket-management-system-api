@@ -19,7 +19,8 @@ class UsersService {
 
       if (!passwordRegex.test(password)) {
         return {
-          error: "Password must be at least 8 characters long, and include at least one uppercase letter, one lowercase letter, one number, and one special character.",
+          error:
+            "Password must be at least 8 characters long, and include at least one uppercase letter, one lowercase letter, one number, and one special character.",
         };
       }
 
@@ -48,7 +49,7 @@ class UsersService {
   public async getUserById(id: number): Promise<any> {
     try {
       const result = await pool.query(
-        "SELECT id, name, email FROM public.users WHERE id = $1",
+        "SELECT id, name, email, type FROM public.users WHERE id = $1",
         [id]
       );
 
