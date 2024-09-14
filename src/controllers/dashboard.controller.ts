@@ -6,7 +6,7 @@ class DashboardController {
 
   public ticketAnalytics = async (req: Request, res: Response) => {
     try {
-      const data = await this.dashboardService.ticketAnalytics();
+      const data = await this.dashboardService.ticketAnalytics(req.query!);
 
       res.status(200).json(data);
     } catch (error: any) {
