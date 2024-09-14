@@ -68,10 +68,16 @@ class TicketService {
     }
   }
 
-  public async ticketHistory(): Promise<any> {
-    // console.log("Fetching analytics data...");
+  public async ticketHistory(query: {
+    startDate?: string;
+    endDate?: string;
+    status?: string;
+    priority?: string;
+    type?: string;
+    venue?: string;
+  }): Promise<any> {
     try {
-      const result = await pool.query(`
+      let baseQuery = `
         SELECT 
           COUNT(*) AS total_tickets,
           COUNT(CASE WHEN status = 'closed' THEN 1 END) AS closed_tickets,
@@ -83,11 +89,37 @@ class TicketService {
           COUNT(CASE WHEN type = 'concert' THEN 1 END) AS concert_tickets,
           COUNT(CASE WHEN type = 'conference' THEN 1 END) AS conference_tickets,
           COUNT(CASE WHEN type = 'sports' THEN 1 END) AS sports_tickets
-        FROM tickets;
-      `);
-      // console.log(result.rows[0]);
+        FROM tickets
+      `;
 
-      const ticketsResult = await pool.query(`
+      let filterConditions: string[] = [];
+
+      if (query.startDate) {
+        filterConditions.push(`created_at >= '${query.startDate}'`);
+      }
+      if (query.endDate) {
+        filterConditions.push(`created_at <= '${query.endDate}'`);
+      }
+      if (query.status) {
+        filterConditions.push(`status = '${query.status}'`);
+      }
+      if (query.priority) {
+        filterConditions.push(`priority = '${query.priority}'`);
+      }
+      if (query.type) {
+        filterConditions.push(`type = '${query.type}'`);
+      }
+      if (query.venue) {
+        filterConditions.push(`venue = '${query.venue}'`);
+      }
+
+      if (filterConditions.length > 0) {
+        baseQuery += ` WHERE ${filterConditions.join(" AND ")}`;
+      }
+
+      const result = await pool.query(baseQuery);
+
+      let ticketsQuery = `
         SELECT 
           id,
           title,
@@ -97,10 +129,14 @@ class TicketService {
           venue,
           created_at AS "createdDate",
           created_by AS "createdBy"
-        FROM tickets;
-      `);
+        FROM tickets
+      `;
 
-      // console.log(ticketsResult.rows);
+      if (filterConditions.length > 0) {
+        ticketsQuery += ` WHERE ${filterConditions.join(" AND ")}`;
+      }
+
+      const ticketsResult = await pool.query(ticketsQuery);
 
       const {
         total_tickets,
@@ -142,10 +178,12 @@ class TicketService {
         })),
       };
 
+      console.log(analyticsData);
+
       return analyticsData;
-    } catch (error) {
+    } catch (error: any) {
       throw new Error(
-        `Failed to fetch ticket analytics: ${(error as Error).message}`
+        `Failed to fetch ticket history: ${(error as Error).message}`
       );
     }
   }

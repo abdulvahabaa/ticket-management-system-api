@@ -184,7 +184,7 @@ class TicketController {
 
   public ticketHistory = async (req: Request, res: Response) => {
     try {
-      const result = await this.ticketService.ticketHistory();
+      const result = await this.ticketService.ticketHistory(req.query!);
       return res.status(200).json(result);
     } catch (error) {
       console.log(error);
