@@ -77,7 +77,7 @@ class DashboardService {
           },
         };
 
-        console.log("Analytics result:", analytics);
+        // console.log("Analytics result:", analytics);
         return analytics;
       } else {
         console.log("No tickets found.");

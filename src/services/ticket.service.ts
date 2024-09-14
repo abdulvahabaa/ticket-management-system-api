@@ -50,12 +50,9 @@ class TicketService {
   }
 
   public async updateTicket(id: string, data: any): Promise<any> {
-    console.log("Data received:", id, data);
-
     const { assigned_users } = data;
 
     const users = assigned_users ? JSON.stringify(assigned_users) : "[]";
-    console.log("Assigned users JSON:", users);
 
     try {
       const result = await pool.query(
@@ -63,7 +60,7 @@ class TicketService {
         [users, id]
       );
 
-      console.log("Update result:", result.rows[0]);
+      // console.log("Update result:", result.rows[0]);
       return result.rows[0];
     } catch (error) {
       console.error("Error updating ticket:", error);
@@ -72,7 +69,7 @@ class TicketService {
   }
 
   public async ticketHistory(): Promise<any> {
-    console.log("Fetching analytics data...");
+    // console.log("Fetching analytics data...");
     try {
       const result = await pool.query(`
         SELECT 

@@ -5,11 +5,8 @@ class UsersController {
   public usersService = new UsersService();
   public createUser = async (req: Request, res: Response) => {
     try {
-      console.log(req.body);
       const userData: any = req.body;
       const data = await this.usersService.createUser(userData);
-
-      console.log(data);
 
       res.status(200).json(data);
     } catch (error: any) {
