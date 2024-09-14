@@ -97,7 +97,7 @@ class TicketController {
         assignedUsers: ticket.assigned_users || [],
       };
       return res.status(200).json(response);
-    } catch (error) {
+    } catch (error:any) {
       res
         .status(500)
         .json({ message: error.message || "Something went wrong" });

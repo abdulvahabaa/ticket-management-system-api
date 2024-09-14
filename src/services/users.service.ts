@@ -15,6 +15,14 @@ class UsersService {
         return { error: "All fields are required" };
       }
 
+      const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,}$/;
+
+      if (!passwordRegex.test(password)) {
+        return {
+          error: "Password must be at least 8 characters long, and include at least one uppercase letter, one lowercase letter, one number, and one special character.",
+        };
+      }
+
       const emailExists = await pool.query(
         "SELECT 1 FROM public.users WHERE email = $1",
         [email]
@@ -43,7 +51,7 @@ class UsersService {
         "SELECT id, name, email FROM public.users WHERE id = $1",
         [id]
       );
-      
+
       return result.rows[0];
     } catch (error) {
       console.error(error);

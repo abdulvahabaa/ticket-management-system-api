@@ -10,7 +10,7 @@ class DashboardController {
       const data = await this.dashboardService.ticketAnalytics();
 
       res.status(200).json(data);
-    } catch (error) {
+    } catch (error:any) {
       console.log(error);
       res
       .status(500)
