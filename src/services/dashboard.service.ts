@@ -1,9 +1,17 @@
 import pool from "../db/connection";
 
 class DashboardService {
-  public async ticketAnalytics(): Promise<any> {
+  public async ticketAnalytics(query: {
+    startDate?: string;
+    endDate?: string;
+    status?: string;
+    priority?: string;
+    type?: string;
+    venue?: string;
+  }): Promise<any> {
     try {
-      const result = await pool.query(`
+     
+      let baseQuery = `
         WITH ticket_counts AS (
           SELECT 
             COUNT(*) AS total_tickets,
@@ -28,6 +36,35 @@ class DashboardService {
             COUNT(CASE WHEN priority = 'medium' THEN 1 END) / COUNT(DISTINCT DATE(created_at)) AS avg_medium_priority_per_day,
             COUNT(CASE WHEN priority = 'high' THEN 1 END) / COUNT(DISTINCT DATE(created_at)) AS avg_high_priority_per_day
           FROM tickets
+      `;
+
+   
+      let filterConditions: string[] = [];
+
+      if (query.startDate) {
+        filterConditions.push(`created_at >= '${query.startDate}'`);
+      }
+      if (query.endDate) {
+        filterConditions.push(`created_at <= '${query.endDate}'`);
+      }
+      if (query.status) {
+        filterConditions.push(`status = '${query.status}'`);
+      }
+      if (query.priority) {
+        filterConditions.push(`priority = '${query.priority}'`);
+      }
+      if (query.type) {
+        filterConditions.push(`type = '${query.type}'`);
+      }
+      if (query.venue) {
+        filterConditions.push(`venue = '${query.venue}'`);
+      }
+
+      if (filterConditions.length > 0) {
+        baseQuery += ` WHERE ${filterConditions.join(' AND ')}`;
+      }
+
+      baseQuery += `
         )
         SELECT
           total_tickets,
@@ -49,7 +86,9 @@ class DashboardService {
           conference_type,
           sports_type
         FROM ticket_counts;
-      `);
+      `;
+
+      const result = await pool.query(baseQuery);
 
       if (result.rows.length > 0) {
         const analytics = {
@@ -77,7 +116,7 @@ class DashboardService {
           },
         };
 
-        // console.log("Analytics result:", analytics);
+        console.log("Analytics result:", analytics);
         return analytics;
       } else {
         console.log("No tickets found.");
